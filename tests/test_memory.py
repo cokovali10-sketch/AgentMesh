@@ -1,5 +1,8 @@
 from agentmesh.core.memory import Memory
 from agentmesh.core.message import Message, Role
+# --- константы вынесены FORGE refactor ---
+CONST_3 = 3
+
 
 
 def _msg(sender: str, content: str) -> Message:
@@ -15,10 +18,10 @@ def test_working_memory_roundtrip():
 
 
 def test_working_memory_cap():
-    mem = Memory(max_working=3)
+    mem = Memory(max_working=CONST_3)
     for i in range(10):
         mem.remember_working(_msg("a", f"m{i}"))
-    assert len(mem.recall_working()) == 3
+    assert len(mem.recall_working()) == CONST_3
     assert mem.recall_working()[-1].content == "m9"
 
 

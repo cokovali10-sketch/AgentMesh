@@ -15,6 +15,9 @@ from typing import Any, Protocol
 from agentmesh.core.memory import Memory
 from agentmesh.core.message import Message, Role
 from agentmesh.mcp.tool_registry import ToolRegistry
+# --- константы вынесены FORGE refactor ---
+CONST_0_7 = 0.7
+
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +28,7 @@ class LLMClient(Protocol):
     async def chat(
         self,
         messages: list[Message],
-        temperature: float = 0.7,
+        temperature: float = CONST_0_7,
         max_tokens: int | None = None,
         tools: list[dict[str, Any]] | None = None,
     ) -> Message: ...
@@ -41,7 +44,7 @@ class Agent:
         system_prompt: str = "Ты полезный ассистент.",
         memory: Memory | None = None,
         tools: ToolRegistry | None = None,
-        temperature: float = 0.7,
+        temperature: float = CONST_0_7,
         keywords: list[str] | None = None,
     ) -> None:
         self.name = name

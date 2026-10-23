@@ -11,6 +11,9 @@ import re
 from pathlib import Path
 
 from agentmesh.mcp.tool_registry import ToolRegistry
+# --- константы вынесены FORGE refactor ---
+CONST_20000 = 20000
+
 
 
 def register_builtins(registry: ToolRegistry, workspace: str = ".") -> None:
@@ -21,7 +24,7 @@ def register_builtins(registry: ToolRegistry, workspace: str = ".") -> None:
         if not p.is_file():
             return f"Файл не найден: {path}"
         text = p.read_text(encoding="utf-8", errors="replace")
-        return text[:20000]
+        return text[:CONST_20000]
 
     def list_files(path: str = ".") -> str:
         p = Path(path)
@@ -54,7 +57,7 @@ def register_builtins(registry: ToolRegistry, workspace: str = ".") -> None:
 
         async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
             resp = await client.get(url)
-            return resp.text[:20000]
+            return resp.text[:CONST_20000]
 
     registry.register(
         "read_file",

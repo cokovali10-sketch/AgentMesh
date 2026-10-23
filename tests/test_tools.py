@@ -1,6 +1,9 @@
 import pytest
 
 from agentmesh.mcp.tool_registry import ToolRegistry
+# --- константы вынесены FORGE refactor ---
+CONST_42 = 42
+
 
 
 def test_register_and_schemas():
@@ -19,13 +22,13 @@ def test_register_and_schemas():
 @pytest.mark.asyncio
 async def test_invoke_sync_and_async():
     reg = ToolRegistry()
-    reg.register("sync", lambda: 42, "sync", {"type": "object", "properties": {}})
+    reg.register("sync", lambda: CONST_42, "sync", {"type": "object", "properties": {}})
 
     async def async_fn():
         return "async-result"
 
     reg.register("asyn", async_fn, "asyn", {"type": "object", "properties": {}})
-    assert await reg.invoke("sync") == 42
+    assert await reg.invoke("sync") == CONST_42
     assert await reg.invoke("asyn") == "async-result"
 
 

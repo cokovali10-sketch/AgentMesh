@@ -13,6 +13,12 @@ import httpx
 
 from agentmesh.core.message import Message, Role
 from agentmesh.llm.base import LLMProviderError, parse_tool_arguments
+# --- константы вынесены FORGE refactor ---
+CONST_0_7 = 0.7
+CONST_60 = 60.0
+CONST_300 = 300
+CONST_400 = 400
+
 
 
 def _format_openai_tools(tools: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -39,7 +45,7 @@ class OpenAICompatClient:
         api_key: str | None = None,
         base_url: str = "https://api.openai.com/v1",
         model: str = "gpt-4o-mini",
-        timeout: float = 60.0,
+        timeout: float = CONST_60,
     ) -> None:
         self.api_key = api_key or os.getenv("OPENAI_API_KEY", "")
         if not self.api_key and "api.openai.com" in base_url:
@@ -51,7 +57,7 @@ class OpenAICompatClient:
     async def chat(
         self,
         messages: list[Message],
-        temperature: float = 0.7,
+        temperature: float = CONST_0_7,
         max_tokens: int | None = None,
         tools: list[dict[str, Any]] | None = None,
     ) -> Message:
@@ -71,8 +77,8 @@ class OpenAICompatClient:
         }
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             resp = await client.post(f"{self.base_url}/chat/completions", json=payload, headers=headers)
-            if resp.status_code >= 400:
-                raise LLMProviderError(f"HTTP {resp.status_code}: {resp.text[:300]}")
+            if resp.status_code >= CONST_400:
+                raise LLMProviderError(f"HTTP {resp.status_code}: {resp.text[:CONST_300]}")
 
         data = resp.json()
         choice = data["choices"][0]["message"]
@@ -100,7 +106,7 @@ class AnthropicClient:
         self,
         api_key: str | None = None,
         model: str = "claude-3-5-sonnet-latest",
-        timeout: float = 60.0,
+        timeout: float = CONST_60,
     ) -> None:
         self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY", "")
         if not self.api_key:
@@ -111,7 +117,7 @@ class AnthropicClient:
     async def chat(
         self,
         messages: list[Message],
-        temperature: float = 0.7,
+        temperature: float = CONST_0_7,
         max_tokens: int | None = None,
         tools: list[dict[str, Any]] | None = None,
     ) -> Message:
@@ -135,8 +141,8 @@ class AnthropicClient:
         }
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             resp = await client.post("https://api.anthropic.com/v1/messages", json=payload, headers=headers)
-            if resp.status_code >= 400:
-                raise LLMProviderError(f"HTTP {resp.status_code}: {resp.text[:300]}")
+            if resp.status_code >= CONST_400:
+                raise LLMProviderError(f"HTTP {resp.status_code}: {resp.text[:CONST_300]}")
 
         data = resp.json()
         text = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text")

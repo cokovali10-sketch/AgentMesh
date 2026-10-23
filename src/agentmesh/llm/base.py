@@ -6,6 +6,9 @@ import json
 from typing import Any
 
 from agentmesh.core.message import Message, Role
+# --- константы вынесены FORGE refactor ---
+CONST_8000 = 8000
+
 
 
 class LLMProviderError(RuntimeError):
@@ -27,9 +30,9 @@ def parse_tool_arguments(raw: Any) -> dict[str, Any]:
 def tool_result_message(name: str, result: Any, call_id: str | None = None) -> Message:
     """Собрать сообщение-результат инструмента."""
     if isinstance(result, (dict, list)):
-        content = json.dumps(result, ensure_ascii=False)[:8000]
+        content = json.dumps(result, ensure_ascii=False)[:CONST_8000]
     else:
-        content = str(result)[:8000]
+        content = str(result)[:CONST_8000]
     return Message(
         role=Role.TOOL,
         content=content,
